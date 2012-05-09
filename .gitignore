@@ -10,3 +10,6 @@
 *.lai
 *.la
 *.a
+
+# Xcode project data
+*.xcodeproj

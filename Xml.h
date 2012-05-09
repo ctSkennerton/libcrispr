@@ -228,14 +228,14 @@ namespace crispr {
             //
             void parseXMLFile(std::string XMLFile, 
                               std::string& wantedGroup, 
-                              std::string * directRepeat,
+                              std::string& directRepeat,
                               std::set<std::string>& wantedContigs,
                               std::set<std::string>& wantedSpacers
                               );
             
             xercesc::DOMElement * getWantedGroupFromRoot(xercesc::DOMElement * currentElement, 
                                                          std::string& wantedGroup, 
-                                                         std::string * directRepeat
+                                                         std::string&  directRepeat
                                                          );
             
             

@@ -218,7 +218,7 @@ crispr::xml::reader::~reader()
 }
 void crispr::xml::reader::parseXMLFile(std::string XMLFile, 
                                        std::string& wantedGroup, 
-                                       std::string * directRepeat, 
+                                       std::string&  directRepeat, 
                                        std::set<std::string>& wantedContigs,
                                        std::set<std::string>& wantedReads
                                        )
@@ -294,7 +294,7 @@ void crispr::xml::reader::parseXMLFile(std::string XMLFile,
            
 xercesc::DOMElement * crispr::xml::reader::getWantedGroupFromRoot(xercesc::DOMElement * parentNode, 
                                                                   std::string& wantedGroup, 
-                                                                  std::string * directRepeat)
+                                                                  std::string&  directRepeat)
 {
     for (xercesc::DOMElement * currentElement = parentNode->getFirstElementChild(); currentElement != NULL; currentElement = currentElement->getNextElementSibling())        
     {
@@ -309,7 +309,7 @@ xercesc::DOMElement * crispr::xml::reader::getWantedGroupFromRoot(xercesc::DOMEl
             {
                 // get the length of the direct repeat
                 char * c_dr = tc(currentElement->getAttribute(attr_Drseq()));
-                *directRepeat = c_dr;
+                directRepeat = c_dr;
                 return currentElement;
             }
         }
