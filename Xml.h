@@ -84,6 +84,9 @@ enum {
 };
 namespace crispr {
     namespace xml {
+        typedef std::vector<std::string> IDVector;
+        typedef std::map<std::string, IDVector > Spacer2SourceMap;
+        typedef std::map<std::string, std::string> XMLIDMap;
         class base {
         public:
             //constructor / destructor
@@ -156,7 +159,7 @@ namespace crispr {
             
                         // Parsing functions
             xercesc::DOMDocument * setFileParser(const char * xmlFile);
-
+            
         private:            
             // grep ATTLIST crass.dtd | sed -e "s%[^ ]* [^ ]* \([^ ]*\) .*%XMLCh\* ATTR_\1;%" | sort | uniq
             // grep ELEMENT crass.dtd | sed -e "s%[^ ]* \([^ ]*\) .*%XMLCh\* TAG_\1;%" | sort | uniq
@@ -223,15 +226,79 @@ namespace crispr {
             //
             // Working functions
             //
-            void parseXMLFile(std::string XMLFile, std::string& wantedGroup, std::string * directRepeat, std::set<std::string>& wantedContigs, std::list<std::string>& spacersForAssembly);
+            void parseXMLFile(std::string XMLFile, 
+                              std::string& wantedGroup, 
+                              std::string * directRepeat,
+                              std::set<std::string>& wantedContigs,
+                              std::set<std::string>& wantedSpacers
+                              );
             
-            xercesc::DOMElement * getWantedGroupFromRoot(xercesc::DOMElement * currentElement, std::string& wantedGroup, std::string * directRepeat);
-            xercesc::DOMElement * parseGroupForAssembly(xercesc::DOMElement* currentElement);
-            void parseAssemblyForContigIds(xercesc::DOMElement* currentElement, std::set<std::string>& wantedContigs, std::list<std::string>& spacersForAssembly);
-            void getSpacerIdForAssembly(xercesc::DOMElement* currentElement, std::list<std::string>& spacersForAssembly);
+            xercesc::DOMElement * getWantedGroupFromRoot(xercesc::DOMElement * currentElement, 
+                                                         std::string& wantedGroup, 
+                                                         std::string * directRepeat
+                                                         );
             
             
-
+            xercesc::DOMElement * parseGroupForAssembly(xercesc::DOMElement* currentElement
+                                                        );
+            
+            void parseAssemblyForContigIds(xercesc::DOMElement* parentNode, 
+                                           std::set<std::string>& wantedReads, 
+                                           Spacer2SourceMap& spacersForAssembly,
+                                           XMLIDMap& source2acc,
+                                           std::set<std::string>& wantedContigs
+                                           );
+            
+            void getSourceIdForAssembly(xercesc::DOMElement* parentNode, 
+                                        std::set<std::string>& wantedReads,
+                                        Spacer2SourceMap& spacersForAssembly,
+                                        XMLIDMap& source2acc
+                                        );
+            
+            /** Get a list of sources for a group 
+             *  @param container An associative container to write the sources to. 
+             *  The container must have both key and value types as XMLCh *
+             *  The container must overload reference operator[]
+             *  @param parentNode The parent node for the sources for iteration
+             */
+            template <class C >
+            void getSourcesForGroup(C& container, xercesc::DOMElement * parentNode) {
+                for (xercesc::DOMElement * currentNode = parentNode->getFirstElementChild(); 
+                     currentNode != NULL; 
+                     currentNode->getNextElementSibling()) {
+                    
+                    char * current_source_id = tc(currentNode->getAttribute(attr_Soid()));
+                    char * current_source_acc = tc(currentNode->getAttribute(attr_Accession()));
+                    container[current_source_id] = current_source_acc;
+                    xr(&current_source_id);
+                    xr(&current_source_acc);
+                }
+            }
+            /** Get a list of source identifiers for all spacers
+             *  @param container An associative container that maps a single
+             *  key (the spacer) to a list of sources
+             *  @param parentNode The parent node for the spacer tags
+             */
+            template <class C>
+            void mapSacersToSourceID(C& container, xercesc::DOMElement * parentNode) {
+                // each spacer
+                for (xercesc::DOMElement * currentNode = parentNode->getFirstElementChild(); 
+                     currentNode != NULL; 
+                     currentNode->getNextElementSibling()) {
+                    
+                    char * spid = tc(currentNode->getAttribute(attr_Spid()));
+                    // each source
+                    for (xercesc::DOMElement * sp_source = parentNode->getFirstElementChild(); 
+                         sp_source != NULL; 
+                         sp_source->getNextElementSibling()) {
+                        
+                        char * soid = tc(sp_source->getAttribute(attr_Soid()));
+                        container[spid].push_back(soid);
+                        xr(&soid);
+                    }
+                    xr(&spid);
+                }
+            }
             
         private:
             xercesc::XercesDOMParser * CX_FileParser;			// parsing object
