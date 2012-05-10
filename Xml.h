@@ -72,6 +72,7 @@
 #include <iostream.h>
 #endif
 #include "StringCheck.h"
+#include "Exception.h"
 #define tc(buf) xercesc::XMLString::transcode(buf)
 #define xr(buf) xercesc::XMLString::release(buf)
 
@@ -155,9 +156,9 @@ namespace crispr {
             inline XMLCh * tag_Spacer(void) { return TAG_spacer; }
             inline XMLCh * tag_Spacers(void) { return TAG_spacers; }
             inline XMLCh * tag_Version(void) { return TAG_version; }
-        
             
-                        // Parsing functions
+            
+            // Parsing functions
             xercesc::DOMDocument * setFileParser(const char * xmlFile);
             
         private:            
@@ -215,7 +216,7 @@ namespace crispr {
             XMLCh * TAG_version;
             
         };
-
+        
         class reader : public base {
         public:
             reader();
@@ -263,16 +264,27 @@ namespace crispr {
              */
             template <class C >
             void getSourcesForGroup(C& container, xercesc::DOMElement * parentNode) {
-                for (xercesc::DOMElement * currentNode = parentNode->getFirstElementChild(); 
-                     currentNode != NULL; 
-                     currentNode->getNextElementSibling()) {
-                    
-                    char * current_source_id = tc(currentNode->getAttribute(attr_Soid()));
-                    char * current_source_acc = tc(currentNode->getAttribute(attr_Accession()));
-                    container[current_source_id] = current_source_acc;
-                    xr(&current_source_id);
-                    xr(&current_source_acc);
+                
+                if (xercesc::XMLString::equals(tag_Sources(), parentNode->getTagName())) {
+                    for (xercesc::DOMElement * currentNode = parentNode->getFirstElementChild(); 
+                         currentNode != NULL; 
+                         currentNode = currentNode->getNextElementSibling()) {
+                        
+                        
+                        char * current_source_id = tc(currentNode->getAttribute(attr_Soid()));
+                        char * current_source_acc = tc(currentNode->getAttribute(attr_Accession()));
+                        container[current_source_id] = current_source_acc;
+                        xr(&current_source_id);
+                        xr(&current_source_acc);
+                    }
+                } else {
+                    throw crispr::xml_exception(__FILE__,
+                                                __LINE__,
+                                                __PRETTY_FUNCTION__,
+                                                "Parent not 'sources' tag");
                 }
+                
+                
             }
             /** Get a list of source identifiers for all spacers
              *  @param container An associative container that maps a single
@@ -284,13 +296,13 @@ namespace crispr {
                 // each spacer
                 for (xercesc::DOMElement * currentNode = parentNode->getFirstElementChild(); 
                      currentNode != NULL; 
-                     currentNode->getNextElementSibling()) {
+                     currentNode = currentNode->getNextElementSibling()) {
                     
                     char * spid = tc(currentNode->getAttribute(attr_Spid()));
                     // each source
-                    for (xercesc::DOMElement * sp_source = parentNode->getFirstElementChild(); 
+                    for (xercesc::DOMElement * sp_source = currentNode->getFirstElementChild(); 
                          sp_source != NULL; 
-                         sp_source->getNextElementSibling()) {
+                         sp_source = sp_source->getNextElementSibling()) {
                         
                         char * soid = tc(sp_source->getAttribute(attr_Soid()));
                         container[spid].push_back(soid);
@@ -302,7 +314,7 @@ namespace crispr {
             
         private:
             xercesc::XercesDOMParser * CX_FileParser;			// parsing object
-
+            
         };
         
         class writer : public base {
