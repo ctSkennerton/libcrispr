@@ -65,10 +65,10 @@ crispr::xml::base::base()
     }
     catch( xercesc::XMLException& e )
     {
-      char * message = xercesc::XMLString::transcode( e.getMessage() );
-      std::cerr << "XML toolkit initialization error: " << message << std::endl;
-      xercesc::XMLString::release( &message );
-      // throw exception here to return ERROR_XERCES_INIT
+        char * message = xercesc::XMLString::transcode( e.getMessage() );
+        std::cerr << "XML toolkit initialization error: " << message << std::endl;
+        xercesc::XMLString::release( &message );
+        // throw exception here to return ERROR_XERCES_INIT
     }
 }
 
@@ -84,7 +84,7 @@ crispr::xml::base::~base(void)
     {
         std::cerr << "Unknown exception encountered in TagNamesdtor" << std::endl;
     }
-
+    
     xercesc::XMLPlatformUtils::Terminate();  // Terminate after release of memory
 }
 void crispr::xml::base::init(void) {
@@ -242,11 +242,11 @@ void crispr::xml::reader::parseXMLFile(std::string XMLFile,
         // Get the top-level element: 
         xercesc::DOMElement * elementRoot = xmlDoc->getDocumentElement();
         if( !elementRoot ) throw crispr::xml_exception( __FILE__,
-                                                        __LINE__,
-                                                        __PRETTY_FUNCTION__,
-                                                        "empty XML document" 
-                                                        );
-                                 
+                                                       __LINE__,
+                                                       __PRETTY_FUNCTION__,
+                                                       "empty XML document" 
+                                                       );
+        
         
         // find our wanted group
         xercesc::DOMElement * wanted_group_element = getWantedGroupFromRoot(elementRoot, wantedGroup, directRepeat);
@@ -259,9 +259,9 @@ void crispr::xml::reader::parseXMLFile(std::string XMLFile,
                                         );
         }
         // get the sources
-        // they should be the first child element of the group
+        // they should be the first child element of the data
         XMLIDMap all_sources;
-        xercesc::DOMElement * sources_elem = wanted_group_element->getFirstElementChild();
+        xercesc::DOMElement * sources_elem = wanted_group_element->getFirstElementChild()->getFirstElementChild();
         getSourcesForGroup(all_sources, sources_elem);
         
         // a map of spacers to their corresponding list of sources
@@ -291,12 +291,14 @@ void crispr::xml::reader::parseXMLFile(std::string XMLFile,
     }
 }
 
-           
+
 xercesc::DOMElement * crispr::xml::reader::getWantedGroupFromRoot(xercesc::DOMElement * parentNode, 
                                                                   std::string& wantedGroup, 
                                                                   std::string&  directRepeat)
 {
-    for (xercesc::DOMElement * currentElement = parentNode->getFirstElementChild(); currentElement != NULL; currentElement = currentElement->getNextElementSibling())        
+    for (xercesc::DOMElement * currentElement = parentNode->getFirstElementChild(); 
+         currentElement != NULL; 
+         currentElement = currentElement->getNextElementSibling())        
     {
         if (xercesc::XMLString::equals(currentElement->getTagName(), tag_Group()))
         {
@@ -323,15 +325,17 @@ xercesc::DOMElement * crispr::xml::reader::getWantedGroupFromRoot(xercesc::DOMEl
 
 xercesc::DOMElement * crispr::xml::reader::parseGroupForAssembly(xercesc::DOMElement* parentNode)
 {
-    for (xercesc::DOMElement * currentElement = parentNode->getFirstElementChild(); currentElement != NULL; currentElement = currentElement->getNextElementSibling())        
+    for (xercesc::DOMElement * currentElement = parentNode->getFirstElementChild(); 
+         currentElement != NULL; 
+         currentElement = currentElement->getNextElementSibling())        
     {
-       if( xercesc::XMLString::equals(currentElement->getTagName(), tag_Assembly()))
-       {
-           // assembly section
-           // the child nodes will be the contigs
-           return currentElement;
-       }       
-   }
+        if( xercesc::XMLString::equals(currentElement->getTagName(), tag_Assembly()))
+        {
+            // assembly section
+            // the child nodes will be the contigs
+            return currentElement;
+        }       
+    }
     // if there is no assembly for this group
     return NULL;
 } 
@@ -346,22 +350,21 @@ void crispr::xml::reader::parseAssemblyForContigIds(xercesc::DOMElement* parentN
          currentElement != NULL; 
          currentElement = currentElement->getNextElementSibling())        
     {
-       if( xercesc::XMLString::equals(currentElement->getTagName(), tag_Contig()))
-       {
-           // check to see if the current contig is one that we want
-           char * c_current_contig = tc(currentElement->getAttribute(attr_Cid()));
-           std::string current_contig = c_current_contig;
-           std::set<std::string>::iterator contig_iter = wantedContigs.find(current_contig);
-           if( contig_iter != wantedContigs.end())
-           {
-               
-               // get the spacers from the assembly
-               getSourceIdForAssembly(currentElement, wantedReads, spacersForAssembly, source2acc);
-           }
-           xr(&c_current_contig);
-       }
-       
-   }
+        if( xercesc::XMLString::equals(currentElement->getTagName(), tag_Contig()))
+        {
+            // check to see if the current contig is one that we want
+            char * c_current_contig = tc(currentElement->getAttribute(attr_Cid()));
+            std::string current_contig = c_current_contig;
+            std::set<std::string>::iterator contig_iter = wantedContigs.find(current_contig);
+            if( contig_iter != wantedContigs.end())
+            {
+                // get the spacers from the assembly
+                getSourceIdForAssembly(currentElement, wantedReads, spacersForAssembly, source2acc);
+            }
+            xr(&c_current_contig);
+        }
+        
+    }
 }
 
 void crispr::xml::reader::getSourceIdForAssembly(xercesc::DOMElement* parentNode, 
@@ -437,15 +440,15 @@ xercesc::DOMElement * crispr::xml::writer::createDOMDocument(std::string rootEle
             XMLCh * x_root_elem = tc(rootElement.c_str());
             XW_DocElem = impl->createDocument( 0, x_root_elem, 0);  
             xr(&x_root_elem);
-
+            
             if (XW_DocElem != NULL) 
             {
                 xercesc::DOMElement* rootElem = XW_DocElem->getDocumentElement();
                 XMLCh * x_version_num = tc(versionNumber.c_str());
-
+                
                 rootElem->setAttribute(attr_Version(), x_version_num);
                 xr(&x_version_num);
-
+                
                 errorNumber = 0;
                 return rootElem;
             }
@@ -648,7 +651,7 @@ xercesc::DOMElement * crispr::xml::writer::addFlanker(std::string& seq, std::str
 {
     XMLCh * x_seq = tc(seq.c_str());
     XMLCh * x_flid = tc(flid.c_str());
-
+    
     xercesc::DOMElement * flanker = XW_DocElem->createElement(tag_Flanker());
     flanker->setAttribute(attr_Seq(), x_seq);
     flanker->setAttribute(attr_Flid(), x_flid);
@@ -708,7 +711,7 @@ void crispr::xml::writer::addSpacer(std::string tag, std::string& spid, std::str
     XMLCh * x_drid = tc(drid.c_str());
     XMLCh * x_drconf = tc(drconf.c_str());
     XMLCh * x_spid = tc(spid.c_str());
-
+    
     xercesc::DOMElement * fs = XW_DocElem->createElement(x_tag);
     fs->setAttribute(attr_Drid(), x_drid);
     fs->setAttribute(attr_Drconf(), x_drconf);
@@ -761,7 +764,7 @@ xercesc::DOMElement * crispr::xml::writer::addSource(std::string accession, std:
     xr(&x_acc);
     xr(&x_soid);
     return source;
-                        
+    
 }
 
 xercesc::DOMElement * crispr::xml::writer::addSpacerSource(std::string soid, xercesc::DOMElement * parentNode)
@@ -834,7 +837,7 @@ void crispr::xml::writer::addProgCommand(std::string progCommand, xercesc::DOMEl
 }
 
 //
- // File IO / Printing
+// File IO / Printing
 //
 
 bool crispr::xml::writer::printDOMToFile(std::string outFileName )
@@ -853,7 +856,7 @@ bool crispr::xml::writer::printDOMToFile(std::string outFileName )
         XMLCh * x_encoding = tc("ISO8859-1");
         theOutputDesc->setEncoding(x_encoding);
         xr(&x_encoding);
-
+        
         xercesc::DOMConfiguration* serializerConfig=theSerializer->getDomConfig();
         
         // set feature if the serializer supports the feature/mode
@@ -881,7 +884,7 @@ bool crispr::xml::writer::printDOMToFile(std::string outFileName )
         //myFormTarget=new StdOutFormatTarget();
         
         theOutputDesc->setByteStream(myFormTarget);
-
+        
         theSerializer->write(XW_DocElem, theOutputDesc);
         
         theOutputDesc->release();
@@ -909,9 +912,9 @@ bool crispr::xml::writer::printDOMToFile(std::string outFileName )
         retval = false;
         xr(&c_exept);
     }
-
-return retval;
-
+    
+    return retval;
+    
 }
 
 bool crispr::xml::writer::printDOMToScreen(void )
@@ -1082,7 +1085,7 @@ bool crispr::xml::writer::printDOMToScreen(xercesc::DOMDocument * domDoc )
         
         // set user specified output encoding
         XMLCh * x_encoding = tc("ISO8859-1");
-
+        
         theOutputDesc->setEncoding(x_encoding);
         xr(&x_encoding);
         
