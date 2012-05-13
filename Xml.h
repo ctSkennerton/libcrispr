@@ -1,10 +1,11 @@
 // File: XML.h
 // Original Author: Michael Imelfort 2011
+// Extended: Connor Skennerton 2011, 2012
 // --------------------------------------------------------------------
 //
 // OVERVIEW:
 // 
-// Header file for the crass XML reader writer
+// Defines The xml base, reader and writer classes
 //
 // Many thanks to http://www.yolinux.com/TUTORIALS/XML-Xerces-C.html
 //
@@ -41,38 +42,40 @@
 #define XML_h
 
 // system includes
-#include 'xercesc/dom/DOM.hpp'
-#include 'xercesc/dom/DOMDocument.hpp'
-#include 'xercesc/dom/DOMDocumentType.hpp'
-#include 'xercesc/dom/DOMElement.hpp'
-#include 'xercesc/dom/DOMImplementation.hpp'
-#include 'xercesc/dom/DOMImplementationLS.hpp'
-#include 'xercesc/dom/DOMNodeIterator.hpp'
-#include 'xercesc/dom/DOMNodeList.hpp'
-#include 'xercesc/dom/DOMText.hpp'
-#include 'xercesc/parsers/XercesDOMParser.hpp'
-#include 'xercesc/util/XMLUni.hpp'
-#include 'xercesc/util/TransService.hpp'
-#include 'xercesc/util/PlatformUtils.hpp'
-#include 'xercesc/util/XMLString.hpp'
-#include 'xercesc/util/OutOfMemoryException.hpp'
+#include <xercesc/dom/DOM.hpp>
+#include <xercesc/dom/DOMDocument.hpp>
+#include <xercesc/dom/DOMDocumentType.hpp>
+#include <xercesc/dom/DOMElement.hpp>
+#include <xercesc/dom/DOMImplementation.hpp>
+#include <xercesc/dom/DOMImplementationLS.hpp>
+#include <xercesc/dom/DOMNodeIterator.hpp>
+#include <xercesc/dom/DOMNodeList.hpp>
+#include <xercesc/dom/DOMText.hpp>
+#include <xercesc/parsers/XercesDOMParser.hpp>
+#include <xercesc/util/XMLUni.hpp>
+#include <xercesc/util/TransService.hpp>
+#include <xercesc/util/PlatformUtils.hpp>
+#include <xercesc/util/XMLString.hpp>
+#include <xercesc/util/OutOfMemoryException.hpp>
 
-#include 'xercesc/framework/StdOutFormatTarget.hpp'
-#include 'xercesc/framework/LocalFileFormatTarget.hpp'
+#include <xercesc/framework/StdOutFormatTarget.hpp>
+#include <xercesc/framework/LocalFileFormatTarget.hpp>
 
-#include 'string'
-#include 'stdexcept'
-#include 'set'
-#include 'list'
-#include 'vector'
+#include <string>
+#include <stdexcept>
+#include <set>
+#include <list>
+#include <vector>
 
 #if defined(XERCES_NEW_IOSTREAMS)
-#include 'iostream'
+#include <iostream>
 #else
-#include 'iostream.h'
+#include <iostream.h>
 #endif
 #include "StringCheck.h"
 #include "Exception.h"
+
+
 #define tc(buf) xercesc::XMLString::transcode(buf)
 #define xr(buf) xercesc::XMLString::release(buf)
 
@@ -85,9 +88,10 @@ enum {
 };
 namespace crispr {
     namespace xml {
-        typedef std::vector'std::string' IDVector;
-        typedef std::map'std::string, IDVector ' Spacer2SourceMap;
-        typedef std::map'std::string, std::string' XMLIDMap;
+        typedef std::vector<std::string> IDVector;
+        typedef std::map<std::string, IDVector > Spacer2SourceMap;
+        typedef std::map<std::string, std::string> XMLIDMap;
+        typedef std::set<std::string> StringSet;
         class base {
         public:
             //constructor / destructor
@@ -219,19 +223,33 @@ namespace crispr {
         
         class reader : public base {
         public:
+            
+            // default constructor
             reader();
             ~reader();
             
+            
+            // the reader should have virtual functions for overloading  
+            
+            
+            
             //DOMDocument Creation returns root node
+            // should be the same as set file parser
             void parseXMLFile(std::string XMLFile);
+            
+            
+            // iterate through groups
+            
+            
+            
             //
             // Working functions
             //
             void parseXMLFile(std::string XMLFile, 
                               std::string& wantedGroup, 
                               std::string& directRepeat,
-                              std::set'std::string'& wantedContigs,
-                              std::set'std::string'& wantedSpacers
+                              StringSet& wantedContigs,
+                              StringSet& wantedSpacers
                               );
             
             xercesc::DOMElement * getWantedGroupFromRoot(xercesc::DOMElement * currentElement, 
@@ -244,10 +262,10 @@ namespace crispr {
                                                         );
             
             void parseAssemblyForContigIds(xercesc::DOMElement* parentNode, 
-                                           std::set'std::string'& wantedReads, 
+                                           StringSet& wantedReads, 
                                            Spacer2SourceMap& spacersForAssembly,
                                            XMLIDMap& source2acc,
-                                           std::set'std::string'& wantedContigs
+                                           StringSet& wantedContigs
                                            );
             /** Iterate through all spacers for a contig and collecting source accessions  
              *  @param parentNode The contig node from the DOM tree 
@@ -256,7 +274,7 @@ namespace crispr {
              *  @param source2acc A container containing a mapping between source IDs and source accessions 
              */
             void getSourceIdForAssembly(xercesc::DOMElement* parentNode, 
-                                        std::set'std::string'& wantedReads,
+                                        StringSet& wantedReads,
                                         Spacer2SourceMap& spacersForAssembly,
                                         XMLIDMap& source2acc
                                         );
@@ -267,17 +285,17 @@ namespace crispr {
              *  The container must overload reference operator[]
              *  @param parentNode The parent node for the sources for iteration
              */
-            template 'class C '
+            template <class C>
             void getSourcesForGroup(C& container, xercesc::DOMElement * parentNode) {
                 
-                if (xercesc::XMLString::equals(tag_Sources(), parentNode-'getTagName())) {
-                    for (xercesc::DOMElement * currentNode = parentNode-'getFirstElementChild(); 
+                if (xercesc::XMLString::equals(tag_Sources(), parentNode->getTagName())) {
+                    for (xercesc::DOMElement * currentNode = parentNode->getFirstElementChild(); 
                          currentNode != NULL; 
-                         currentNode = currentNode-'getNextElementSibling()) {
+                         currentNode = currentNode->getNextElementSibling()) {
                         
                         
-                        char * current_source_id = tc(currentNode-'getAttribute(attr_Soid()));
-                        char * current_source_acc = tc(currentNode-'getAttribute(attr_Accession()));
+                        char * current_source_id = tc(currentNode->getAttribute(attr_Soid()));
+                        char * current_source_acc = tc(currentNode->getAttribute(attr_Accession()));
                         container[current_source_id] = current_source_acc;
                         xr(&current_source_id);
                         xr(&current_source_acc);
@@ -296,20 +314,20 @@ namespace crispr {
              *  key (the spacer) to a list of sources
              *  @param parentNode The parent node for the spacer tags
              */
-            template 'class C'
+            template <class C>
             void mapSacersToSourceID(C& container, xercesc::DOMElement * parentNode) {
                 // each spacer
-                for (xercesc::DOMElement * currentNode = parentNode-'getFirstElementChild(); 
+                for (xercesc::DOMElement * currentNode = parentNode->getFirstElementChild(); 
                      currentNode != NULL; 
-                     currentNode = currentNode-'getNextElementSibling()) {
+                     currentNode = currentNode->getNextElementSibling()) {
                     
-                    char * spid = tc(currentNode-'getAttribute(attr_Spid()));
+                    char * spid = tc(currentNode->getAttribute(attr_Spid()));
                     // each source
-                    for (xercesc::DOMElement * sp_source = currentNode-'getFirstElementChild(); 
+                    for (xercesc::DOMElement * sp_source = currentNode->getFirstElementChild(); 
                          sp_source != NULL; 
-                         sp_source = sp_source-'getNextElementSibling()) {
+                         sp_source = sp_source->getNextElementSibling()) {
                         
-                        char * soid = tc(sp_source-'getAttribute(attr_Soid()));
+                        char * soid = tc(sp_source->getAttribute(attr_Soid()));
                         container[spid].push_back(soid);
                         xr(&soid);
                     }
@@ -318,7 +336,7 @@ namespace crispr {
             }
             
         private:
-            xercesc::XercesDOMParser * CX_FileParser;			// parsing object
+            xercesc::XercesDOMParser * XR_FileParser;			// parsing object
             
         };
         
