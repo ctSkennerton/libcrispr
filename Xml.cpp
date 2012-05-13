@@ -592,8 +592,8 @@ xercesc::DOMElement * crispr::xml::writer::addGroup(std::string& gID, std::strin
 xercesc::DOMElement * crispr::xml::writer::addData(xercesc::DOMElement * parentNode)
 {
     // create the data node with spacer and drs as child elements
-    xercesc::DOMElement * sources = XW_DocElem->createElement(tag_Sources());
     xercesc::DOMElement * data = XW_DocElem->createElement(tag_Data());
+    xercesc::DOMElement * sources = XW_DocElem->createElement(tag_Sources());
     xercesc::DOMElement * drs = XW_DocElem->createElement(tag_Drs());
     xercesc::DOMElement * spacers = XW_DocElem->createElement(tag_Spacers());
     data->appendChild(sources);

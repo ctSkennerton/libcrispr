@@ -21,7 +21,7 @@
 //  GNU General Public License for more details.
 //
 //  You should have received a copy of the GNU General Public License
-//  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+//  along with this program.  If not, see 'http://www.gnu.org/licenses/'.
 // --------------------------------------------------------------------
 //
 //                        A
@@ -41,35 +41,35 @@
 #define XML_h
 
 // system includes
-#include <xercesc/dom/DOM.hpp>
-#include <xercesc/dom/DOMDocument.hpp>
-#include <xercesc/dom/DOMDocumentType.hpp>
-#include <xercesc/dom/DOMElement.hpp>
-#include <xercesc/dom/DOMImplementation.hpp>
-#include <xercesc/dom/DOMImplementationLS.hpp>
-#include <xercesc/dom/DOMNodeIterator.hpp>
-#include <xercesc/dom/DOMNodeList.hpp>
-#include <xercesc/dom/DOMText.hpp>
-#include <xercesc/parsers/XercesDOMParser.hpp>
-#include <xercesc/util/XMLUni.hpp>
-#include <xercesc/util/TransService.hpp>
-#include <xercesc/util/PlatformUtils.hpp>
-#include <xercesc/util/XMLString.hpp>
-#include <xercesc/util/OutOfMemoryException.hpp>
+#include 'xercesc/dom/DOM.hpp'
+#include 'xercesc/dom/DOMDocument.hpp'
+#include 'xercesc/dom/DOMDocumentType.hpp'
+#include 'xercesc/dom/DOMElement.hpp'
+#include 'xercesc/dom/DOMImplementation.hpp'
+#include 'xercesc/dom/DOMImplementationLS.hpp'
+#include 'xercesc/dom/DOMNodeIterator.hpp'
+#include 'xercesc/dom/DOMNodeList.hpp'
+#include 'xercesc/dom/DOMText.hpp'
+#include 'xercesc/parsers/XercesDOMParser.hpp'
+#include 'xercesc/util/XMLUni.hpp'
+#include 'xercesc/util/TransService.hpp'
+#include 'xercesc/util/PlatformUtils.hpp'
+#include 'xercesc/util/XMLString.hpp'
+#include 'xercesc/util/OutOfMemoryException.hpp'
 
-#include <xercesc/framework/StdOutFormatTarget.hpp>
-#include <xercesc/framework/LocalFileFormatTarget.hpp>
+#include 'xercesc/framework/StdOutFormatTarget.hpp'
+#include 'xercesc/framework/LocalFileFormatTarget.hpp'
 
-#include <string>
-#include <stdexcept>
-#include <set>
-#include <list>
-#include <vector>
+#include 'string'
+#include 'stdexcept'
+#include 'set'
+#include 'list'
+#include 'vector'
 
 #if defined(XERCES_NEW_IOSTREAMS)
-#include <iostream>
+#include 'iostream'
 #else
-#include <iostream.h>
+#include 'iostream.h'
 #endif
 #include "StringCheck.h"
 #include "Exception.h"
@@ -85,9 +85,9 @@ enum {
 };
 namespace crispr {
     namespace xml {
-        typedef std::vector<std::string> IDVector;
-        typedef std::map<std::string, IDVector > Spacer2SourceMap;
-        typedef std::map<std::string, std::string> XMLIDMap;
+        typedef std::vector'std::string' IDVector;
+        typedef std::map'std::string, IDVector ' Spacer2SourceMap;
+        typedef std::map'std::string, std::string' XMLIDMap;
         class base {
         public:
             //constructor / destructor
@@ -230,8 +230,8 @@ namespace crispr {
             void parseXMLFile(std::string XMLFile, 
                               std::string& wantedGroup, 
                               std::string& directRepeat,
-                              std::set<std::string>& wantedContigs,
-                              std::set<std::string>& wantedSpacers
+                              std::set'std::string'& wantedContigs,
+                              std::set'std::string'& wantedSpacers
                               );
             
             xercesc::DOMElement * getWantedGroupFromRoot(xercesc::DOMElement * currentElement, 
@@ -244,14 +244,19 @@ namespace crispr {
                                                         );
             
             void parseAssemblyForContigIds(xercesc::DOMElement* parentNode, 
-                                           std::set<std::string>& wantedReads, 
+                                           std::set'std::string'& wantedReads, 
                                            Spacer2SourceMap& spacersForAssembly,
                                            XMLIDMap& source2acc,
-                                           std::set<std::string>& wantedContigs
+                                           std::set'std::string'& wantedContigs
                                            );
-            
+            /** Iterate through all spacers for a contig and collecting source accessions  
+             *  @param parentNode The contig node from the DOM tree 
+             *  @param wantedReads a container to store the source accessions in
+             *  @param spacersForAssembly A container containing a list of all sources for each spacer
+             *  @param source2acc A container containing a mapping between source IDs and source accessions 
+             */
             void getSourceIdForAssembly(xercesc::DOMElement* parentNode, 
-                                        std::set<std::string>& wantedReads,
+                                        std::set'std::string'& wantedReads,
                                         Spacer2SourceMap& spacersForAssembly,
                                         XMLIDMap& source2acc
                                         );
@@ -262,17 +267,17 @@ namespace crispr {
              *  The container must overload reference operator[]
              *  @param parentNode The parent node for the sources for iteration
              */
-            template <class C >
+            template 'class C '
             void getSourcesForGroup(C& container, xercesc::DOMElement * parentNode) {
                 
-                if (xercesc::XMLString::equals(tag_Sources(), parentNode->getTagName())) {
-                    for (xercesc::DOMElement * currentNode = parentNode->getFirstElementChild(); 
+                if (xercesc::XMLString::equals(tag_Sources(), parentNode-'getTagName())) {
+                    for (xercesc::DOMElement * currentNode = parentNode-'getFirstElementChild(); 
                          currentNode != NULL; 
-                         currentNode = currentNode->getNextElementSibling()) {
+                         currentNode = currentNode-'getNextElementSibling()) {
                         
                         
-                        char * current_source_id = tc(currentNode->getAttribute(attr_Soid()));
-                        char * current_source_acc = tc(currentNode->getAttribute(attr_Accession()));
+                        char * current_source_id = tc(currentNode-'getAttribute(attr_Soid()));
+                        char * current_source_acc = tc(currentNode-'getAttribute(attr_Accession()));
                         container[current_source_id] = current_source_acc;
                         xr(&current_source_id);
                         xr(&current_source_acc);
@@ -291,20 +296,20 @@ namespace crispr {
              *  key (the spacer) to a list of sources
              *  @param parentNode The parent node for the spacer tags
              */
-            template <class C>
+            template 'class C'
             void mapSacersToSourceID(C& container, xercesc::DOMElement * parentNode) {
                 // each spacer
-                for (xercesc::DOMElement * currentNode = parentNode->getFirstElementChild(); 
+                for (xercesc::DOMElement * currentNode = parentNode-'getFirstElementChild(); 
                      currentNode != NULL; 
-                     currentNode = currentNode->getNextElementSibling()) {
+                     currentNode = currentNode-'getNextElementSibling()) {
                     
-                    char * spid = tc(currentNode->getAttribute(attr_Spid()));
+                    char * spid = tc(currentNode-'getAttribute(attr_Spid()));
                     // each source
-                    for (xercesc::DOMElement * sp_source = currentNode->getFirstElementChild(); 
+                    for (xercesc::DOMElement * sp_source = currentNode-'getFirstElementChild(); 
                          sp_source != NULL; 
-                         sp_source = sp_source->getNextElementSibling()) {
+                         sp_source = sp_source-'getNextElementSibling()) {
                         
-                        char * soid = tc(sp_source->getAttribute(attr_Soid()));
+                        char * soid = tc(sp_source-'getAttribute(attr_Soid()));
                         container[spid].push_back(soid);
                         xr(&soid);
                     }
@@ -330,103 +335,218 @@ namespace crispr {
             writer();
             ~writer();
             
-            //
-            // File IO / printing
-            //
+            /** Create an in-memory representation of a crispr file   
+             *  @param rootElement Name for the root element 
+             *  @param versionNumber version for the crispr file to have
+             *  @param errorNumber an integer for saving any error codes produced during document creation
+             *  @return The xercesc::DOMElement for the root node or NULL on failure
+             */
             xercesc::DOMElement * createDOMDocument(std::string rootElement, std::string versionNumber, int& errorNumber );
             
             xercesc::DOMElement * createDOMDocument(const char * rootElement, const char * versionNumber, int& errorNumber );
             
-            // add a <metadata> tag to <group>
+            /** add a 'metadata' tag to 'group'   
+             *  @param parentNode the xercesc::DOMElement of the 'group' tag 
+             *  @return  the xercesc::DOMElement of the 'metadata' tag
+             */
             xercesc::DOMElement * addMetaData(xercesc::DOMElement * parentNode);
             
-            // add a <metadata> tag to <group> with notes
+            /** add a 'metadata' tag to 'group' with notes  
+             *  @param parentNode the xercesc::DOMElement of the 'group' tag
+             *  @param notes freeform notes that the user can add in 
+             *  @return  the xercesc::DOMElement of the 'metadata' tag
+             */
             xercesc::DOMElement * addMetaData(std::string notes, xercesc::DOMElement * parentNode);
             
-            // add in extra files to this group such as a reads file
+            /** add in files referenced by this group  
+             *  @param type The type of reference file.  Must be one of image|sequence|log|data
+             *  @param url path to the file
+             *  @param parentNode xercesc::DOMElement of the 'metadata' tag
+             */
             void addFileToMetadata(std::string type, std::string url, xercesc::DOMElement * parentNode);
             
+            /** add extra notes to the 'metadata'  
+             *  @param notes freeform notes added by the user
+             *  @param parentNode xercesc::DOMElement of the 'metadata' tag
+             */
             void addNotesToMetadata(std::string notes, xercesc::DOMElement * parentNode);
             
-            // add a <group> to <crass_assem>
+            /** add a 'group' to the root element  
+             *  @param gID The unique group identifier
+             *  @param drConsensus The direct repeat concensus sequence for this group
+             *  @param parentNode xercesc::DOMElement of the root element
+             */
             xercesc::DOMElement * addGroup(std::string& gID, std::string& drConsensus, xercesc::DOMElement * parentNode);
             
-            // add the <data> to <group>
+            /** add the 'data' to 'group'. This automatically creates the child nodes for the 'sources' 'drs' and 'spacers' tags  
+             *  @param parentNode the 'group' xercesc::DOMElement
+             *  @return The xercesc::DOMElement of the 'data' tag   
+             */
             xercesc::DOMElement * addData(xercesc::DOMElement * parentNode);
             
-            // add the <assembly> to <group>
+            /** add the 'assembly' to 'group'   
+             *  @param parentNode the 'group' xercesc::DOMElement
+             *  @return The xercesc::DOMElement of the 'assembly' tag   
+             */
             xercesc::DOMElement * addAssembly(xercesc::DOMElement * parentNode);
             
-            // add a direct repeat to the <data> (<dr>)
-            void addDirectRepeat(std::string& drid, std::string& seq, xercesc::DOMElement * dataNode);
+            /** add a direct repeat 'dr' tag to the 'drs' tag   
+             *  @param drid The unique DR id for this group
+             *  @param seq The sequence of the direct repeat in its lowest lexicographical form
+             *  @param parentNode The xercesc::DOMElement of the 'drs' tag 
+             */
+            void addDirectRepeat(std::string& drid, std::string& seq, xercesc::DOMElement * parentNode);
             
-            // add a spcaer to the <data> (<spacer>)
-            xercesc::DOMElement * addSpacer(std::string& seq, std::string& spid, xercesc::DOMElement * dataNode, std::string cov = "0" );
+            /** add a 'spcaer' tag to the 'spacers'   
+             *  @param seq sequence of the spacer in the form that would appear if the direct repeat is in its lowest lexicographical form
+             *  @param spid  the unique spacer identifier for this group
+             *  @param parentNode the xercesc::DOMElement of the 'spacers' tag
+             *  @param cov The coverage of the spacer. Defaults to zero
+             *  @return the xercesc::DOMElement for the 'spacer' tag
+             */
+            xercesc::DOMElement * addSpacer(std::string& seq, std::string& spid, xercesc::DOMElement * parentNode, std::string cov = "0" );
             
-            // create a <flankers> tag in <data>
+            /** create a 'flankers' tag in 'data'   
+             *  @param parentNode the xercesc::DOMElement of the 'data' tag
+             *  @return the xercesc::DOMElement of the 'flankers' tag
+             */
             xercesc::DOMElement * createFlankers(xercesc::DOMElement * parentNode);
             
-            // add a <flanker> to the <data> section (<flanker>)
-            xercesc::DOMElement * addFlanker(std::string& seq, std::string& flid, xercesc::DOMElement * dataNode);
+            /** add a 'flanker' tag to the 'flankers' tag   
+             *  @param seq sequence of the flanker in the form that would appear if the direct repeat is in its lowest lexicographical form
+             *  @param flid the unique flanker identifier for this group
+             *  @param parentNode the xercesc::DOMElement of the 'flankers' tag 
+             *  @return the xercesc::DOMElement of the 'flanker' tag   
+             */
+            xercesc::DOMElement * addFlanker(std::string& seq, std::string& flid, xercesc::DOMElement * parentNode);
             
-            // add a <contig> to an <assembly>
+            /** add a 'contig' to an 'assembly'   
+             *  @param cid a unique contig id for this group
+             *  @param parentNode the xercesc::DOMElement of the 'assembly' tag
+             *  @return the xercesc::DOMElement of the 'contig' tag   
+             */
             xercesc::DOMElement * addContig(std::string& cid, xercesc::DOMElement * parentNode);
             
-            // add the concensus sequence to the contig (creates <concensus>)
+            /** add the concensus sequence to the contig   
+             *  @param concensus A string of DNA characters representing the joined sequence of all the spacers and direct repeats for this contig
+             *  @param parentNode the xercesc::DOMElement of the 'contig' tag  
+             */
             void createConsensus(std::string& concensus, xercesc::DOMElement * parentNode);
             
-            // add a spacer to a contig (<cspacer> tag)
+            /** Add a 'cspacer' to a 'contig'   
+             *  @param spid Unique identifier for the spacer.  should be the same as listed in the 'spacers' tag in 'data'
+             *  @param parentNode the xercesc::DOMElement of the 'contig' tag
+             *  @return the xercesc::DOMElement of the 'cspacer' tag  
+             */
             xercesc::DOMElement * addSpacerToContig(std::string& spid, xercesc::DOMElement * parentNode);
             
-            // use to create a backward spacers (<bspacers>) or forward spacers (<fspacers>) element by changing the value of tag
+            /** use to create a backward spacers ('bspacers') or forward spacers ('fspacers') child elements of 'cspacer'   
+             *  @param tag A string of either "bspacers" or "fspacers"
+             *  @return the xercesc::DOMElement of either "bspacers" or "fspacers"  
+             */
             xercesc::DOMElement * createSpacers(std::string tag);
             
-            // use to create a backward flankers (<bflankers>) or forward flankers (<fflankers>) element by changing the value of tag
+            /** A convienience method that calls createSpacers, Used only for making the code more explicit   
+             *  @param tag A string of either "bflankers" or "fflankers"
+             *  @return the xercesc::DOMElement of either "bflankers" or "fflankers"  
+             */
             xercesc::DOMElement * createFlankers(std::string tag);
             
-            // use to add either a backward spacer (<bs>) or forward spacer (<fs>) by changing the value of tag
+            /** add either a backward spacer (bs) or forward spacer (fs) tags to a cspacer tag   
+             *  @param tag A string that describes the type of association ('bs' or 'fs')
+             *  @param spid The unique spacer id for the link.  Should be the same as an spid listed in 'spacers' tag inside 'data'
+             *  @param drid The unique direct repeat id for the DR that sits inbetween the two spacers
+             *  @param drconf
+             *  @param parentNode The xercesc::DOMElement corresponding to one of bspacers, fspacers  
+             */
             void addSpacer(std::string tag, std::string& spid, std::string& drid, std::string& drconf, xercesc::DOMElement * parentNode);
             
-            // use to add either a backward flanker (<bf>) or forward flanker (<ff>) by changing the value of tag
+            /** add either a backward flanker (bf) or forward flanker (ff) tags to cspacer   
+             *  @param tag A string that describes the type of association ('bf' or 'ff')
+             *  @param flid The unique flanker id for the link.  Should be the same as an spid listed in 'fankers' tag inside 'data'
+             *  @param drconf 
+             *  @param directjoin
+             *  @param parentNode The xercesc::DOMElement corresponding to one of bflankers, fflankers  
+             */
             void addFlanker(std::string tag, std::string& flid, std::string& drconf, std::string& directjoin, xercesc::DOMElement * parentNode);
             
-            //create the sources tag for a group <sources>
+            /** create the sources tag for a group    
+             *  @param parentNode The xercesc::DOMElement for the 'group' tag
+             *  @return The xercesc::DOMElement for the 'sources' tag  
+             */
             xercesc::DOMElement * addSources(xercesc::DOMElement * parentNode);
             
-            // create a source tag for either the sources in <group> 
+            /** add a 'source' tag for the sources   
+             *  @param accession The accession for the source as it would appear in a fasta file
+             *  @param soid The unique source identifier for this source.  Ideally this should be short, containing sharacters and
+             *              numbers for future reference within the cirpsr file.
+             *  @param parentNode The xercesc::DOMElement of the 'sources' tag
+             *  @return The xercesc::DOMElement of teh 'source' tag  
+             */
             xercesc::DOMElement * addSource(std::string accession, std::string soid, xercesc::DOMElement * parentNode);
             
-            // create a source tag for the <spacer>
+            /** add a source tag for a spacer   
+             *  @param soid The unique source identifier for this source. Sould be the same as listed in the 'sources' inside 'data'
+             *  @param parentNode The xercesc::DOMElement of the 'spacer' that was fould inside this source
+             *  @return The xercesc::DOMElement of the 'source' tag  
+             */
             xercesc::DOMElement * addSpacerSource(std::string soid, xercesc::DOMElement * parentNode);
             
-            // add start and end positions for <source> in <spacer>
+            /** add start and end positions for 'source' in 'spacer'   
+             *  @param start The start position in the source for the spacer
+             *  @param end The end position in the source for the spacer
+             *  @param parentNode The 'source' tag to the spacer  
+             */
             void addStartAndEndPos(std::string start, std::string end, xercesc::DOMElement * parentNode);
             
-            // add a <program> tag to <metadata>
+            /** add a 'program' tag to 'metadata'   
+             *  @param parentNode The xercesc::DOMElement of the 'metadata' tag
+             *  @return The xercesc::DOMElement of the 'program' tag  
+             */
             xercesc::DOMElement * addProgram(xercesc::DOMElement * parentNode);
             
-            //add a <name> tag to <program>
+            /** add a 'name' tag to 'program'   
+             *  @param progName The name of the program that called this CRISPR
+             *  @param parentNode The xercesc::DOMElement of the 'program' tag
+             */
             void addProgName(std::string progName, xercesc::DOMElement * parentNode);
             
-            // add a <version> tag to <program>
+            /** add a 'version' tag to 'program'   
+             *  @param progVersion The version of the program that called this CRISPR
+             *  @param parentNode The xercesc::DOMElement of the 'program' tag
+             */
             void addProgVersion(std::string progVersion, xercesc::DOMElement * parentNode);
             
-            //add a <command> tag to <program>
+            /** add a 'command' tag to 'program'   
+             *  @param progCommand The command line options used to call this CRISPR
+             *  @param parentNode The xercesc::DOMElement of the 'program' tag 
+             */
             void addProgCommand(std::string progCommand, xercesc::DOMElement * parentNode);
             
+            /** print the current document to file   
+             *  @param outFileName The name of the output file
+             */
             bool printDOMToFile(std::string outFileName );
             
+            /** print the current document to screen   
+             */
             bool printDOMToScreen(void);
             
             bool printDOMToFile(std::string outFileName, xercesc::DOMDocument * domDoc );
             
             bool printDOMToScreen( xercesc::DOMDocument * domDoc);
             
+            /** convienience method to return the root element of the current document   
+             *  @return The xercesc::DOMElement for the root ('crispr') tag  
+             */
             inline xercesc::DOMElement * getRootElement(void)
             {
-                return XW_DocElem->getDocumentElement();
+                return XW_DocElem-'getDocumentElement();
             }
             
+            /** convienience method to return the current document   
+             *  @return The xercesc::DOMDocument for this writer  
+             */
             inline xercesc::DOMDocument * getDocumentObj(void)
             {
                 return XW_DocElem;
