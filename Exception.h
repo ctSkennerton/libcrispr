@@ -1,9 +1,8 @@
-/* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 4; tab-width: 4 -*- */
 /*
- * crisprtools
- * Copyright (C) Connor Skennerton 2011 <c.skennerton@gmail.com>
  * 
-crisprtools is free software: you can redistribute it and/or modify it
+ * Copyright (C) Connor Skennerton 2011 2012 
+ * 
+ crisprtools is free software: you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
  * Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
@@ -40,21 +39,29 @@ namespace crispr {
             ss<<file<<" : "<<line<<" : "<<function;
             errorMsg = ss.str();
         }
-
+        exception(const char * file, int line, const char * function ,std::stringstream& message)
+        {
+            std::stringstream ss;
+            ss<<"[ERROR]: ";
+            ss<< message.str()<<std::endl;
+            ss<<file<<" : "<<line<<" : "<<function;
+            errorMsg = ss.str();
+        }
+        
         // destructor
         ~exception(){}
-
+        
         virtual std::string what(void)
         {
             return errorMsg;
         }
     protected:
         std::string errorMsg;
-
+        
     };
     
     class input_exception: public exception{
-        public:
+    public:
         input_exception(const char * message)
         {
             errorMsg = message;
@@ -80,6 +87,14 @@ namespace crispr {
             ss<<file<<" : "<<line<<" : "<<function;
             errorMsg = ss.str();
         }
+        xml_exception(const char * file, int line, const char * function ,std::stringstream& message)
+        {
+            std::stringstream ss;
+            ss<<"[XML_ERROR]: ";
+            ss<< message.str()<<std::endl;
+            ss<<file<<" : "<<line<<" : "<<function;
+            errorMsg = ss.str();
+        }
         // destructor
         ~xml_exception(){}
         
@@ -102,6 +117,14 @@ namespace crispr {
             ss<<file<<" : "<<line<<" : "<<function;
             errorMsg = ss.str();
         }
+        runtime_exception(const char * file, int line, const char * function ,std::stringstream& message)
+        {
+            std::stringstream ss;
+            ss<<"[RUNTIME_ERROR]: ";
+            ss<< message.str()<<std::endl;
+            ss<<file<<" : "<<line<<" : "<<function;
+            errorMsg = ss.str();
+        }
         // destructor
         ~runtime_exception(){}
         
@@ -113,7 +136,7 @@ namespace crispr {
         std::string errorMsg;
     };
     class no_file_exception: public runtime_exception{
-        public:
+    public:
         no_file_exception(const char * file, int line, const char * function ,const char * nofile)
         {
             std::stringstream ss;
@@ -135,7 +158,13 @@ namespace crispr {
     
     class substring_exception: public exception{
     public:
-        substring_exception(const char * message, const char * base_str, int start_pos, int length, const char * file, int line, const char * function)
+        substring_exception(const char * message, 
+                            const char * base_str, 
+                            int start_pos, 
+                            int length, 
+                            const char * file, 
+                            int line, 
+                            const char * function)
         {
             std::stringstream ss;
             ss<<"[SUBSTRING_ERROR]: ";
@@ -157,6 +186,6 @@ namespace crispr {
     protected:
         std::string errorMsg;
     };
-
+    
 }
 #endif // _CRISPREXCEPTION_H_
