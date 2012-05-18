@@ -51,6 +51,7 @@
 // local includes
 #include "Xml.h"
 #include "Exception.h"
+
 #include "StlExt.h"
 
 crispr::xml::base::base()
@@ -206,12 +207,12 @@ crispr::xml::reader::reader()
 {
     init();
     alloc();
-    CX_FileParser = new xercesc::XercesDOMParser;
+    XR_FileParser = new xercesc::XercesDOMParser;
 }
 
 crispr::xml::reader::~reader()
 {
-    delete CX_FileParser;
+    delete XR_FileParser;
     dealloc();
     
 }
@@ -226,17 +227,17 @@ void crispr::xml::reader::parseXMLFile(std::string XMLFile,
     // why not!
     //
     // Configure DOM parser.
-    CX_FileParser->setValidationScheme( xercesc::XercesDOMParser::Val_Never );
-    CX_FileParser->setDoNamespaces( false );
-    CX_FileParser->setDoSchema( false );
-    CX_FileParser->setLoadExternalDTD( false );
+    XR_FileParser->setValidationScheme( xercesc::XercesDOMParser::Val_Never );
+    XR_FileParser->setDoNamespaces( false );
+    XR_FileParser->setDoSchema( false );
+    XR_FileParser->setLoadExternalDTD( false );
     
     try
     {
-        CX_FileParser->parse( XMLFile.c_str() );
+        XR_FileParser->parse( XMLFile.c_str() );
         
         // no need to free this pointer - owned by the parent parser object
-        xercesc::DOMDocument * xmlDoc = CX_FileParser->getDocument();
+        xercesc::DOMDocument * xmlDoc = XR_FileParser->getDocument();
         
         // Get the top-level element: 
         xercesc::DOMElement * elementRoot = xmlDoc->getDocumentElement();
