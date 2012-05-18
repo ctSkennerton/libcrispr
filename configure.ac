@@ -6,7 +6,7 @@ AC_INIT(crass, 0.0.5, c.skennerton@gmail.com)
 
 AC_CONFIG_AUX_DIR(build)
 AC_CONFIG_MACRO_DIR([m4])
-AC_CONFIG_SRCDIR([Xml.h])
+AC_CONFIG_SRCDIR([libcrispr/Xml.h])
 AC_CONFIG_HEADER([config.h])
 
 AM_INIT_AUTOMAKE([foreign])
@@ -60,4 +60,4 @@ AC_HEADER_STDC
 
 
 
-AC_OUTPUT(Makefile)
+AC_OUTPUT(Makefile libcrispr/Makefile)
