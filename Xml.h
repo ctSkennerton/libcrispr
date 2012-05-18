@@ -72,7 +72,6 @@
 #else
 #include <iostream.h>
 #endif
-#include "StringCheck.h"
 #include "Exception.h"
 
 
@@ -344,7 +343,6 @@ namespace crispr {
             
             //members
             xercesc::DOMDocument * XW_DocElem;
-            StringCheck XW_SourcesMap;
             int XW_CurrentSourceId;
             
         public:
@@ -559,7 +557,7 @@ namespace crispr {
              */
             inline xercesc::DOMElement * getRootElement(void)
             {
-                return XW_DocElem-'getDocumentElement();
+                return XW_DocElem->getDocumentElement();
             }
             
             /** convienience method to return the current document   
