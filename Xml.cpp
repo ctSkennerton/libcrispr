@@ -51,7 +51,6 @@
 // local includes
 #include "Xml.h"
 #include "Exception.h"
-#include "StringCheck.h"
 #include "StlExt.h"
 
 crispr::xml::base::base()
