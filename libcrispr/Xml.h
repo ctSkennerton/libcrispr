@@ -66,6 +66,7 @@
 #include <set>
 #include <list>
 #include <vector>
+#include <map>
 
 #if defined(XERCES_NEW_IOSTREAMS)
 #include <iostream>
