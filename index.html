@@ -1,0 +1,79 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Libcrispr by ctSkennerton</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <script src="javascripts/scale.fix.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>Libcrispr</h1>
+        <p>A small library for dealing with .crispr files</p>
+        <p class="view"><a href="https://github.com/ctSkennerton/libcrispr">View the Project on GitHub <small>ctSkennerton/libcrispr</small></a></p>
+        <ul>
+          <li><a href="https://github.com/ctSkennerton/libcrispr/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/ctSkennerton/libcrispr/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/ctSkennerton/libcrispr">View On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
+      <section>
+        <h1>libcrispr</h1>
+
+<p>A small library for dealing with .crispr files</p>
+
+<h2>crispr files?</h2>
+
+<p>A .crispr file is an opensource XML markup for describing clustered regularly interspersed 
+short palindromic repeats (CRISPR).  This includes information about the repeats, spacers and
+their arrangement.</p>
+
+<p>Currently libcrispr implements an XML parsing interface for crispr files as well
+as an exception class for handling errors.</p>
+
+<h2>Prerequisites</h2>
+
+<p>libcrispr relies on Xerces-c++ for XML parsing.  It will need to be installed 
+on your system before use.</p>
+
+<h2>Installation</h2>
+
+<p>On most UXIX type systems the following commands should surfice:</p>
+
+<pre><code>./autogen.sh
+./configure
+[sudo] make install
+</code></pre>
+
+<p>You can also use the <code>--with-xerces=[ARG]</code> during configure to specify a non-standard 
+instal location for Xerces</p>
+
+<h2>Usage</h2>
+
+<p>programs using libcrispr should include the relevent header files with:</p>
+
+<pre><code>#include &lt;libcrispr/Xml.h&gt;
+etc...
+</code></pre>
+
+<p>and then add <code>-lcrispr</code> to the program's <code>LDFLAGS</code>
+You may also need to set <code>LD_LIBRARY_FLAGS</code> if you install libcrispr in a non-standard location</p>
+      </section>
+    </div>
+    <footer>
+      <p>Project maintained by <a href="https://github.com/ctSkennerton">ctSkennerton</a></p>
+      <p>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></p>
+    </footer>
+    <!--[if !IE]><script>fixScale(document);</script><!--<![endif]-->
+    
+  </body>
+</html>
