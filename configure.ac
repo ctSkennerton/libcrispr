@@ -16,24 +16,6 @@ LT_LANG([C++])
 
 LIBTOOL_VERSION_STRING="0:0:0"
 AC_SUBST([LIBTOOL_VERSION_STRING])
-#check that graphviz is installed before defining RENDERING
-
-if test x$rendering = xtrue; then
-    AC_CHECK_PROGS([GV_PROGS], [neato fdp sfdp dot circo twopi], [no])
-
-    if test x$GV_PROGS != xno; then
-        
-        AC_DEFINE([RENDERING],[1],[Defines to 1 if image rendering is to be performed])
-        AC_DEFINE_UNQUOTED([DEFAULT_RENDERING_ALGORITHM],["${GV_PROGS}"],[Sets the Default Graphviz algorithm])
-    else
-        echo "*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*"
-        echo "None of the Graphviz executables could"
-        echo "be found in your PATH!"
-        echo "Your installation will not conatin"
-        echo "rendering options!"
-        echo "*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*"
-    fi
-fi
 
 
 # Checks for different libs, headers, functions & programs
@@ -57,7 +39,5 @@ fi
 
 # Checks for header files.
 AC_HEADER_STDC
-
-
 
 AC_OUTPUT(Makefile libcrispr/Makefile)
