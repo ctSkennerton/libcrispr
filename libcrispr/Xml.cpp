@@ -59,9 +59,9 @@ crispr::xml::base::base()
     try  
     {
         // Initialize Xerces infrastructure   
-        this->init();
+        init();
         // transcode all the member variables
-        this->alloc();
+        alloc();
     }
     catch( xercesc::XMLException& e )
     {
@@ -75,17 +75,10 @@ crispr::xml::base::base()
 
 crispr::xml::base::~base(void)
 {
-    try 
-    {
-        // Free memory
-        this->dealloc();
-    }
-    catch( ... )
-    {
-        std::cerr << "Unknown exception encountered in TagNamesdtor" << std::endl;
-    }
-    
-    xercesc::XMLPlatformUtils::Terminate();  // Terminate after release of memory
+    // Free memory
+    dealloc();
+    // Terminate Xerces
+    release();
 }
 void crispr::xml::base::init(void) {
     xercesc::XMLPlatformUtils::Initialize();
@@ -149,73 +142,80 @@ void crispr::xml::base::alloc(void) {
 void crispr::xml::base::dealloc(void) {
     // grep ELEMENT crass.dtd | sed -e "s%[^ ]* \([^ ]*\) .*%XMLString::release( \&TAG_\1 );%" | sort | uniq
     // grep ATTLIST crass.dtd | sed -e "s%[^ ]* [^ ]* \([^ ]*\) .*%XMLString::release( \&ATTR_\1 );%" | sort | uniq
-    
-    xercesc::XMLString::release( &TAG_assembly );
-    xercesc::XMLString::release( &TAG_bf );
-    xercesc::XMLString::release( &TAG_bflankers );
-    xercesc::XMLString::release( &TAG_bs );
-    xercesc::XMLString::release( &TAG_bspacers );
-    xercesc::XMLString::release( &TAG_command );
-    xercesc::XMLString::release( &TAG_consensus );
-    xercesc::XMLString::release( &TAG_contig );
-    xercesc::XMLString::release( &TAG_crispr );
-    xercesc::XMLString::release( &TAG_cspacer );
-    xercesc::XMLString::release( &TAG_data );
-    xercesc::XMLString::release( &TAG_dr );
-    xercesc::XMLString::release( &TAG_drs );
-    xercesc::XMLString::release( &TAG_epos );
-    xercesc::XMLString::release( &TAG_ff );
-    xercesc::XMLString::release( &TAG_fflankers );
-    xercesc::XMLString::release( &TAG_file );
-    xercesc::XMLString::release( &TAG_flanker );
-    xercesc::XMLString::release( &TAG_flankers );
-    xercesc::XMLString::release( &TAG_fs );
-    xercesc::XMLString::release( &TAG_fspacers );
-    xercesc::XMLString::release( &TAG_group );
-    xercesc::XMLString::release( &TAG_metadata );
-    xercesc::XMLString::release( &TAG_name );
-    xercesc::XMLString::release( &TAG_notes );
-    xercesc::XMLString::release( &TAG_program );
-    xercesc::XMLString::release( &TAG_source );
-    xercesc::XMLString::release( &TAG_sources );
-    xercesc::XMLString::release( &TAG_spacer );
-    xercesc::XMLString::release( &TAG_spacers );
-    xercesc::XMLString::release( &TAG_spos );
-    xercesc::XMLString::release( &TAG_version );
-    
-    xercesc::XMLString::release( &ATTR_accession );
-    xercesc::XMLString::release( &ATTR_cid );
-    xercesc::XMLString::release( &ATTR_confcnt );
-    xercesc::XMLString::release( &ATTR_cov );
-    xercesc::XMLString::release( &ATTR_directjoin );
-    xercesc::XMLString::release( &ATTR_drconf );
-    xercesc::XMLString::release( &ATTR_drid );
-    xercesc::XMLString::release( &ATTR_drseq );
-    xercesc::XMLString::release( &ATTR_flid );
-    xercesc::XMLString::release( &ATTR_gid );
-    xercesc::XMLString::release( &ATTR_seq );
-    xercesc::XMLString::release( &ATTR_soid );
-    xercesc::XMLString::release( &ATTR_spid );
-    xercesc::XMLString::release( &ATTR_totcnt );
-    xercesc::XMLString::release( &ATTR_type );
-    xercesc::XMLString::release( &ATTR_url );
-    xercesc::XMLString::release( &ATTR_version );
+    try {
+        xercesc::XMLString::release( &TAG_assembly );
+        xercesc::XMLString::release( &TAG_bf );
+        xercesc::XMLString::release( &TAG_bflankers );
+        xercesc::XMLString::release( &TAG_bs );
+        xercesc::XMLString::release( &TAG_bspacers );
+        xercesc::XMLString::release( &TAG_command );
+        xercesc::XMLString::release( &TAG_consensus );
+        xercesc::XMLString::release( &TAG_contig );
+        xercesc::XMLString::release( &TAG_crispr );
+        xercesc::XMLString::release( &TAG_cspacer );
+        xercesc::XMLString::release( &TAG_data );
+        xercesc::XMLString::release( &TAG_dr );
+        xercesc::XMLString::release( &TAG_drs );
+        xercesc::XMLString::release( &TAG_epos );
+        xercesc::XMLString::release( &TAG_ff );
+        xercesc::XMLString::release( &TAG_fflankers );
+        xercesc::XMLString::release( &TAG_file );
+        xercesc::XMLString::release( &TAG_flanker );
+        xercesc::XMLString::release( &TAG_flankers );
+        xercesc::XMLString::release( &TAG_fs );
+        xercesc::XMLString::release( &TAG_fspacers );
+        xercesc::XMLString::release( &TAG_group );
+        xercesc::XMLString::release( &TAG_metadata );
+        xercesc::XMLString::release( &TAG_name );
+        xercesc::XMLString::release( &TAG_notes );
+        xercesc::XMLString::release( &TAG_program );
+        xercesc::XMLString::release( &TAG_source );
+        xercesc::XMLString::release( &TAG_sources );
+        xercesc::XMLString::release( &TAG_spacer );
+        xercesc::XMLString::release( &TAG_spacers );
+        xercesc::XMLString::release( &TAG_spos );
+        xercesc::XMLString::release( &TAG_version );
+
+        xercesc::XMLString::release( &ATTR_accession );
+        xercesc::XMLString::release( &ATTR_cid );
+        xercesc::XMLString::release( &ATTR_confcnt );
+        xercesc::XMLString::release( &ATTR_cov );
+        xercesc::XMLString::release( &ATTR_directjoin );
+        xercesc::XMLString::release( &ATTR_drconf );
+        xercesc::XMLString::release( &ATTR_drid );
+        xercesc::XMLString::release( &ATTR_drseq );
+        xercesc::XMLString::release( &ATTR_flid );
+        xercesc::XMLString::release( &ATTR_gid );
+        xercesc::XMLString::release( &ATTR_seq );
+        xercesc::XMLString::release( &ATTR_soid );
+        xercesc::XMLString::release( &ATTR_spid );
+        xercesc::XMLString::release( &ATTR_totcnt );
+        xercesc::XMLString::release( &ATTR_type );
+        xercesc::XMLString::release( &ATTR_url );
+        xercesc::XMLString::release( &ATTR_version );
+    } catch(...) {
+        throw crispr::xml_exception (__FILE__,
+                                     __LINE__,
+                                     __PRETTY_FUNCTION__,
+                                     "Unknown error occurred");
+    }
+
 }
 
+void crispr::xml::base::release (void) {
+    xercesc::XMLPlatformUtils::Terminate();  // Terminate after release of memory
+}
 
 crispr::xml::reader::reader()
 {
-    init();
-    alloc();
     XR_FileParser = new xercesc::XercesDOMParser;
 }
 
 crispr::xml::reader::~reader()
 {
     delete XR_FileParser;
-    dealloc();
-    
 }
+
 void crispr::xml::reader::parseXMLFile(std::string XMLFile, 
                                        std::string& wantedGroup, 
                                        std::string&  directRepeat, 
@@ -389,43 +389,40 @@ void crispr::xml::reader::getSourceIdForAssembly(xercesc::DOMElement* parentNode
     }
 }
 
-//DOMDocument * crispr::xml::base::setFileParser(const char * XMLFile)
-//{
-//    // Configure DOM parser.
-//    xercesc::XercesDOMParser * d->setValidationScheme( XercesDOMParser::Val_Never );
-//    xercesc::XercesDOMParser * d->setDoNamespaces( false );
-//    xercesc::XercesDOMParser * d->setDoSchema( false );
-//    xercesc::XercesDOMParser * d->setLoadExternalDTD( false );
-//    
-//    try
-//    {
-//        CX_FileParser->parse( XMLFile );
-//        return CX_FileParser->getDocument();        
-//    }
-//    catch( xercesc::XMLException& e ) {
-//        char* message = xercesc::XMLString::transcode( e.getMessage() );
-//        std::stringstream errBuf;
-//        errBuf << "Error parsing file: " << message << std::flush;
-//        xercesc::XMLString::release( &message );
-//        throw crispr::xml_exception(__FILE__, __LINE__, __PRETTY_FUNCTION__,(errBuf.str()).c_str());
-//    } catch (xercesc::DOMException& e) {
-//        char* message = xercesc::XMLString::transcode( e.getMessage() );
-//        std::stringstream errBuf;
-//        errBuf << "Error parsing file: " << message << std::flush;
-//        xercesc::XMLString::release( &message );
-//        throw crispr::xml_exception(__FILE__, __LINE__, __PRETTY_FUNCTION__,(errBuf.str()).c_str());
-//    }
-//}
+xercesc::DOMDocument * crispr::xml::reader::setFileParser(const char * XMLFile)
+{
+    // Configure DOM parser.
+    XR_FileParser->setValidationScheme( xercesc::XercesDOMParser::Val_Never );
+    XR_FileParser->setDoNamespaces( false );
+    XR_FileParser->setDoSchema( false );
+    XR_FileParser->setLoadExternalDTD( false );
+    
+    try
+    {
+        XR_FileParser->parse( XMLFile );
+        return XR_FileParser->getDocument();        
+    }
+    catch( xercesc::XMLException& e ) {
+        char* message = xercesc::XMLString::transcode( e.getMessage() );
+        std::stringstream errBuf;
+        errBuf << "Error parsing file: " << message << std::flush;
+        xercesc::XMLString::release( &message );
+        throw crispr::xml_exception(__FILE__, __LINE__, __PRETTY_FUNCTION__,(errBuf.str()).c_str());
+    } catch (xercesc::DOMException& e) {
+        char* message = xercesc::XMLString::transcode( e.getMessage() );
+        std::stringstream errBuf;
+        errBuf << "Error parsing file: " << message << std::flush;
+        xercesc::XMLString::release( &message );
+        throw crispr::xml_exception(__FILE__, __LINE__, __PRETTY_FUNCTION__,(errBuf.str()).c_str());
+    }
+}
 
 crispr::xml::writer::writer() {
     XW_DocElem = NULL;
-    init();
-    alloc();
-    
 }
 
 crispr::xml::writer::~writer() {
-    dealloc();
+    delete XW_DocElem;
 }
 
 xercesc::DOMElement * crispr::xml::writer::createDOMDocument(std::string rootElement, std::string versionNumber, int& errorNumber )   
@@ -1148,5 +1145,14 @@ bool crispr::xml::writer::printDOMToScreen(xercesc::DOMDocument * domDoc )
     return retval;
     
 }
+
+crispr::xml::parser::parser() : reader(), writer()
+{
+    //XP_Reader = crispr::xml::reader();
+    //XP_Writer = crispr::xml::writer();
+}
+
+crispr::xml::parser::~parser()
+{}
 
 
