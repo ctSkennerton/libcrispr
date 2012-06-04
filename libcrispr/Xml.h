@@ -103,7 +103,7 @@ namespace crispr {
             void init(void);
             void alloc(void);
             void dealloc(void);
-            
+            void release(void);
             //
             // Generic get
             //
@@ -357,8 +357,6 @@ namespace crispr {
             inline XMLCh * tag_Version(void) { return TAG_version; }
             
             
-            // Parsing functions
-            xercesc::DOMDocument * setFileParser(const char * xmlFile);
             
         private:            
             // grep ATTLIST crispr-1.1.dtd | sed -e "s%[^ ]* [^ ]* \([^ ]*\) .*%XMLCh\* ATTR_\1;%" | sort | uniq
@@ -416,7 +414,7 @@ namespace crispr {
             
         };
         
-        class reader : public base {
+        class reader : virtual public base {
         public:
             
             // default constructor
@@ -427,6 +425,8 @@ namespace crispr {
             // the reader should have virtual functions for overloading  
             
             
+            // Parsing functions
+            xercesc::DOMDocument * setFileParser(const char * xmlFile);
             
             //DOMDocument Creation returns root node
             // should be the same as set file parser
@@ -535,7 +535,7 @@ namespace crispr {
             
         };
         
-        class writer : public base {
+        class writer : virtual public base {
             
             //members
             xercesc::DOMDocument * XW_DocElem;
@@ -766,8 +766,15 @@ namespace crispr {
             
             
         };
-    }
-}
+        class parser : public reader, public writer {
+
+            public:
+                // constructor
+                parser();
+                ~parser();
+        };
+    } //xml
+} //crispr
 
 
 #endif //XML_h
