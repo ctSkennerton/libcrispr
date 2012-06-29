@@ -74,7 +74,7 @@
   stringstyle=\color{black},
   identifierstyle=\color{darkblue},
   keywordstyle=\color{cyan},
-  morekeywords={seq,drid,confcnt, totcnt, spid, flid,cov, type,url, cid, drconf}% list your attributes here
+  morekeywords={seq,drid,confcnt, totcnt, spid, flid,cov, type,url, cid, drconf, accession,soid}% list your attributes here
 }
 
 \lstdefinelanguage{DTD}
@@ -96,7 +96,7 @@ morekeywords={ELEMENT, ATTLIST, DOCTYPE,  EMPTY}% list your attributes here
 
 %%% The "real" document content comes below...
 
-\title{The CRISPR File Specification (v1.0)}
+\title{The CRISPR File Specification (v1.1)}
 \author{Michael Imelfort and Connor Skennerton}
 \date{18th November 2011} % Activate to display a given date or no date (if empty),
          % otherwise the current date is printed 
@@ -118,10 +118,13 @@ Spacer sequences are small segments of invading DNA that is added to a CRISPR lo
 The leader seuqence flanks one side of the the CRISPR locus and is thought to act as a promoter sequence.
 \section{Elements}
 \subsection{Data}
-The data tag is designed list all of the spacers that a CRISPR contains as well as the direct repeats and any flanking sequences such as the leader sequence.  The plural is intended for the direct repeats as a single locus could have multiple variants of the direct repeat.
+The data tag is designed list all of the spacers that a CRISPR contains as well as the direct repeats, any flanking sequences such as the leader sequence and the sources (reads/genomes) that this CRISPR came from.
 
 \begin{lstlisting}[language=XML_new]
 <data>
+	<sources>
+		<source accession="read:x:y:z:1:HGITA" soid="SO1"/>
+	</sources>
 	<drs>
 		<dr seq="GAGTCCCCGC" drid="DR1" confcnt="12" totcnt="20"/>
 	</drs>
@@ -133,6 +136,10 @@ The data tag is designed list all of the spacers that a CRISPR contains as well 
 	</flankers>
 </data>
 \end{lstlisting}
+\subsubsection{Sources}
+The \lstinline[language=XML_new]$<sources>$ tag is used to define the reads/genome/contig that contained (wholly or part-of) the CRISPR.
+ Each \lstinline[language=XML_new]$<source>$  tag has two requiredattributes: \lstinline[language=XML_new]$accession$ and \lstinline[language=XML_new]$soid$.
+The \lstinline[language=XML_new]$accession$ attribute lists the original accession for the source and the \lstinline[language=XML_new]$soid$ provides a reference for that sourcefor use subsuquently in the file.  The motivation for this is to reduce the number of characters in the file, since accessions/read names tend to be quite long.
 \subsubsection{Direct Repeats}
 Direct repeats are defined in the \lstinline[language=XML_new]$<drs>$  tag as a \lstinline[language=XML_new]$<dr>$.  Each \lstinline[language=XML_new]$<dr>$  tag has two requiredattributes: \lstinline[language=XML_new]$seq$ and \lstinline[language=XML_new]$drid$; and two implied attributes: \lstinline[language=XML_new]$confcnt$ and \lstinline[language=XML_new]$totcnt$
 
@@ -142,7 +149,7 @@ Direct repeats are defined in the \lstinline[language=XML_new]$<drs>$  tag as a 
 </drs>
 \end{lstlisting}
 
-The \lstinline[language=XML_new]$seq$ attribute is the sequence of the direct repeat in its lowest lexicographical form and should not contain any characters other than the IUPAC standard for DNA bases and should be in uppercase.   The \lstinline[language=XML_new]$drid$ attribute is set by the programer, it must be an integer prefixed with "DR" however it does not need to be sequential -- just unique for the \lstinline[language=XML_new]$<group>$ that it is contained in.  
+The \lstinline[language=XML_new]$seq$ attribute is the sequence of the direct repeat in its lowest lexicographical form and should not contain any characters other than the IUPAC standard for DNA bases and should be in uppercase.   The \lstinline[language=XML_new]$drid$ attribute is set by the programer, it must be an integer prefixed with ``DR'' however it does not need to be sequential -- just unique for the \lstinline[language=XML_new]$<group>$ that it is contained in.  
 
 The two implied attributes \lstinline[language=XML_new]$confcnt$ and \lstinline[language=XML_new]$totcnt$
 the number of spacers associated with this particular direct repeat variant.
@@ -153,7 +160,7 @@ Spacers are defined inside the \lstinline[language=XML_new]$<spacers>$ tag as an
 	<spacer seq="TGAGCGGTCGC" spid="SP1" cov="10"/>
 </spacers>
 \end{lstlisting}
-The \lstinline[language=XML_new]$seq$ attribute is listed in the same directionality as the direct repeat.  This is not necessarily is the lowest lexicographical form for the spacer but will be the form in which the direct repeat is in it's lowest lexicographical form.  The \lstinline[language=XML_new]$spid$ attribute is set by the programer, it must be an integer prefixed with "SP" however it does not need to be sequential -- just unique for the \lstinline[language=XML_new]$<group>$ that it is contained in.  The \lstinline[language=XML_new]$cov$ attribute describes how many instances of this spacer were seen in the genome/metagenome/dataset, which may be used in assembly to resolve forks in the arrangement of spacers or to determine community abundance of particular spacers. 
+The \lstinline[language=XML_new]$seq$ attribute is listed in the same directionality as the direct repeat.  This is not necessarily is the lowest lexicographical form for the spacer but will be the form in which the direct repeat is in it's lowest lexicographical form.  The \lstinline[language=XML_new]$spid$ attribute is set by the programer, it must be an integer prefixed with ``SP" however it does not need to be sequential -- just unique for the \lstinline[language=XML_new]$<group>$ that it is contained in.  The \lstinline[language=XML_new]$cov$ attribute describes how many instances of this spacer were seen in the genome/metagenome/dataset, which may be used in assembly to resolve forks in the arrangement of spacers or to determine community abundance of particular spacers. 
 \subsubsection{Flankers}
 The \lstinline[language=XML_new]$<flankers>$ element is not a required part of \lstinline[language=XML_new]$<data>$ however if present decribes any flanking sequences found on either side of the spacer array, such as the leader sequence. Each \lstinline[language=XML_new]$<flanker>$ contains two required attributes: \lstinline[language=XML_new]$seq$ and \lstinline[language=XML_new]$flid$.
 \begin{lstlisting}[language=XML_new]
@@ -166,9 +173,13 @@ The requirements for these attributes are the same as for spacers, namely that t
 The \lstinline[language=XML_new]$<metadata>$ tag can hold a range of information that links with a particular group.  The metadata can take two forms, as either a \lstinline[language=XML_new]$<notes>$ tag that holds freeform infromation inputed by the user or outputed by a program; or as a URL to a local or remote file.
 \begin{lstlisting}[language=XML_new]
 <metadata>
+      <program>
+        	<name>crass</name>
+        	<version>0.2.13</version>
+        	<command>crass -K 9 raw/combined.fa </command>
+      </program>
 	<notes>
 		E. coli dataset of ca. 20Million 100bp reads
-		Command run: crass -o test_out/ -l 4 ./test_input
 	</notes>
 	<file type="image" url="./crispr1.jpg"/>
 	<file type="sequence" url="./crispr1.fa"/>
@@ -201,9 +212,9 @@ The \lstinline[language=XML_new]$<assembly>$ tag defines how all of the spacers,
 </assembly>
 \end{lstlisting}
 \subsubsection{Contigs}
-Contigs are linear sections of a graph where there are no branches between spacers, that is to say that every spacer in a contig contains a single forward and backward link.  Therefore spacers which have multiple forward or backward spacers links are placed into a contig on their own.  This is to make it easy to assembly and join multiple different branching paths through a CRISPR locus as spacers that join multiple divergent arrangments would be in both pathways.
+Contigs are linear sections of a graph where there are no branches between spacers; that is to say that every spacer in a contig contains a single forward and backward link.  Therefore spacers which have multiple forward or backward spacers links are placed into a contig on their own.  This is to make it easy to assembly and join multiple different branching paths through a CRISPR locus as spacers that join multiple divergent arrangments would be in both pathways.
 
-Each contig is defined with a \lstinline[language=XML_new]$<contig>$ tag, which requires a  \lstinline[language=XML_new]$cid$ attribute that must be unique to the \lstinline[language=XML_new]$<group>$.  A \lstinline[language=XML_new]$cid$ must be an integer prefixed with "C".  Each \lstinline[language=XML_new]$<contig>$ must contain one or more \lstinline[language=XML_new]$<cspacer>$ tags and may also contain a \lstinline[language=XML_new]$<concensus>$ tag.
+Each contig is defined with a \lstinline[language=XML_new]$<contig>$ tag, which requires a  \lstinline[language=XML_new]$cid$ attribute that must be unique to the \lstinline[language=XML_new]$<group>$.  A \lstinline[language=XML_new]$cid$ must be an integer prefixed with ``C".  Each \lstinline[language=XML_new]$<contig>$ must contain one or more \lstinline[language=XML_new]$<cspacer>$ tags and may also contain a \lstinline[language=XML_new]$<concensus>$ tag.
 \paragraph{\lstinline[language=XML_new]$<cspacer>$}
 contains a single required attribute \lstinline[language=XML_new]$spid$ that refers to one of the spacers defined in the \lstinline[language=XML_new]$<data>$ tag.  It should also contain references to any linked \lstinline[language=XML_new]$<spacer>$ or \lstinline[language=XML_new]$<flanker>$ sequences using the \lstinline[language=XML_new]$<bspacers>$, \lstinline[language=XML_new]$<fspacers>$, \lstinline[language=XML_new]$<bflankers>$ and \lstinline[language=XML_new]$<fflankers>$ tags, although if a spacer does not connect to anything, then none of these tags will be present.
 \subparagraph{\lstinline[language=XML_new]$<bspacers>$ \& \lstinline[language=XML_new]$<fspacers>$}
@@ -213,7 +224,7 @@ These two tags work in the same way as \lstinline[language=XML_new]$<bspacers>$ 
 \paragraph{Concensus}
 
 \section{Document Type Definition (DTD)}
-\lstinputlisting[language=DTD]{../resources/crass.dtd}
+\lstinputlisting[language=DTD]{crispr_1-1.dtd}
 
 \section{Example}
 \end{document}
