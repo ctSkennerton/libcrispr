@@ -15,8 +15,12 @@ On most UXIX type systems the following commands should surfice:
 ```
 
 ##Usage
-programs using libcrispr should include the relevent header files with:
-```#include <libcrispr/Xml.h>``` 
+programs using libcrispr should include the relevent header files:
+```
+#include <libcrispr/base.h>
+#include <libcrispr/reader.h>
+#include <libcrispr/writer.h>
+``` 
 etc...
 and then add:
 
