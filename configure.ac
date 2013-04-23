@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.61)
-AC_INIT(crass, 0.0.5, c.skennerton@gmail.com)
+AC_INIT(libcrispr, 0.0.6, c.skennerton@gmail.com)
 
 AC_CONFIG_AUX_DIR(build)
 AC_CONFIG_MACRO_DIR([m4])
@@ -14,7 +14,7 @@ LT_INIT
 LT_LANG([C++])
 
 
-LIBTOOL_VERSION_STRING="1:0:0"
+LIBTOOL_VERSION_STRING="1:1:0"
 AC_SUBST([LIBTOOL_VERSION_STRING])
 
 
